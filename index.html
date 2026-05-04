@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda Inteligente Ricardo</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="stylesheet" href="style.css"/>
+  <meta name="theme-color" content="#07110d"/>
+</head>
+<body>
+  <div id="toast" class="toast hidden"></div>
+
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <img src="logo.svg" class="login-logo" alt="Agenda Inteligente Ricardo">
+      <p class="eyebrow">Agenda Inteligente Ricardo</p>
+      <h1>Entrar</h1>
+      <p class="login-help">Use seu usuário e senha para acessar sua agenda.</p>
+      <form id="loginForm" class="client-form">
+        <input id="loginUser" placeholder="Usuário" autocomplete="username" required>
+        <input id="loginPass" placeholder="Senha" type="password" autocomplete="current-password" required>
+        <button type="submit" class="primary-btn">Entrar</button>
+      </form>
+      <p class="security-note">Acesso protegido por Firebase Authentication.</p>
+    </div>
+  </section>
+
+  <main id="appShell" class="app-shell hidden">
+    <section class="hero-card">
+      <div class="logo-wrap"><img src="logo.svg" class="logo" alt="Agenda Inteligente Ricardo"></div>
+      <div class="hero-text">
+        <p class="eyebrow">Olá Ricardo, seja bem-vindo</p>
+        <h1>Sou sua agenda inteligente.</h1>
+        <p class="subtitle">O que temos pra hoje?</p>
+      </div>
+      <button id="btnLogout" class="logout-btn">Sair</button>
+    </section>
+
+    <section class="instruction-card">
+      <h2>Comando de voz</h2>
+      <p>Clique uma vez para falar um comando, ou ative o modo voz para conversar por comandos seguidos.</p>
+      <ul>
+        <li>“Organizar agenda de amanhã para Pato Branco e deixar João por último”</li>
+        <li>“Quem falta visitar hoje?”</li>
+        <li>“Próximo cliente”</li>
+        <li>“Escolher cliente João Silva”</li>
+        <li>“Cadastrar cliente Pedro em Silvânia no endereço Fazenda Boa Vista”</li>
+      </ul>
+      <div class="voice-actions">
+        <button id="btnVoice" class="primary-btn">🎤 Falar uma vez</button>
+        <button id="btnVoiceMode" class="secondary-btn">🎙️ Ativar modo voz contínuo</button>
+        <button id="btnStopVoiceMode" class="danger-btn hidden">⏹️ Parar modo voz</button>
+      </div>
+      <div class="ai-chat">
+        <div class="ai-title">Conversa com a IA</div>
+        <div id="aiChatLog" class="ai-chat-log">
+          <div class="ai-msg assistant"><strong>IA</strong><span>Estou pronta. Posso organizar agenda, responder quem falta visitar, escolher cliente, abrir GPS e cadastrar cliente por comando de voz.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="current-card">
+      <div class="card-head"><span>Cliente atual</span><strong id="progressText">0/0 concluídas</strong></div>
+      <h2 id="currentClientName">Nenhuma agenda iniciada</h2>
+      <p id="currentClientMeta">Organize uma agenda por cidade para começar.</p>
+      <div class="progress-bar"><div id="progressFill"></div></div>
+      <div class="action-grid">
+        <button id="btnFirst" class="secondary-btn">🚀 Visitar primeiro cliente</button>
+        <button id="btnMap" class="secondary-btn">🗺️ Abrir GPS</button>
+        <button id="btnNext" class="primary-btn">➡️ Próximo cliente</button>
+        <button id="btnSkip" class="secondary-btn">⏭️ Pular cliente</button>
+        <button id="btnFinish" class="danger-btn">✅ Finalizar dia</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Clientes</h2><button id="toggleClientForm" class="mini-btn">+ Cadastrar</button></div>
+      <form id="clientForm" class="client-form hidden">
+        <input id="clientName" placeholder="Nome do cliente" required>
+        <input id="clientCity" placeholder="Cidade" required>
+        <input id="clientAddress" placeholder="Endereço completo" required>
+        <input id="clientPhone" placeholder="Telefone">
+        <textarea id="clientNotes" placeholder="Observações"></textarea>
+        <button type="submit" class="primary-btn">Salvar cliente</button>
+      </form>
+      <div id="clientList" class="client-list"></div>
+    </section>
+
+
+
+    <section class="card import-card">
+      <div class="card-head"><h2>Importar clientes com IA</h2><button id="toggleImportBox" class="mini-btn">Abrir</button></div>
+      <div id="importBox" class="hidden">
+        <p class="import-help">Envie print/foto, PDF, CSV/TXT ou cole uma lista. A IA organiza tudo e mostra uma prévia antes de salvar.</p>
+        <div class="limit-box">
+          <strong>Limites seguros:</strong> até 1 arquivo por vez, máximo 4 MB, prévia limitada a 80 clientes por importação. Nada é salvo sem confirmar.
+        </div>
+        <label class="file-label">
+          <span>Arquivo da lista</span>
+          <input id="importFile" type="file" accept=".txt,.csv,.pdf,image/*">
+        </label>
+        <textarea id="importText" placeholder="Ou cole aqui a lista de clientes. Ex: João Silva, Silvânia, Fazenda Boa Vista, (62) 99999-0000"></textarea>
+        <div class="import-actions">
+          <button id="btnAnalyzeImport" class="primary-btn" type="button">🤖 Analisar lista</button>
+          <button id="btnClearImport" class="secondary-btn" type="button">Limpar</button>
+        </div>
+        <div id="importStatus" class="import-status hidden"></div>
+        <div id="importPreview" class="import-preview hidden"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Agendas salvas</h2><button id="refreshAgendas" class="mini-btn">Atualizar</button></div>
+      <div id="agendaList"></div>
+    </section>
+  </main>
+
+  <div id="resumeModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Agenda incompleta encontrada</h2>
+      <p id="resumeText"></p>
+      <div class="modal-actions">
+        <button id="resumeContinue" class="primary-btn">Continuar de onde parou</button>
+        <button id="resumeRestart" class="secondary-btn">Reiniciar rota</button>
+        <button id="resumeChoose" class="secondary-btn">Começar por um cliente específico</button>
+        <button id="resumeOnly" class="secondary-btn">Visitar somente um cliente específico</button>
+        <button id="resumeClose" class="danger-btn">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
